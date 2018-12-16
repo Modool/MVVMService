@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol UIScrollViewRefreshing <NSObject>
+@protocol MDScrollViewRefreshing <NSObject>
 
 @property (nonatomic, assign, getter=isServiceRefreshEnabled) BOOL serviceRefreshEnabled;
 @property (nonatomic, assign, getter=isServiceInfiniteEnabled) BOOL serviceInfiniteEnabled;
@@ -29,13 +29,13 @@ NS_ASSUME_NONNULL_BEGIN
 @class MDListViewModel;
 @interface MDListViewController : MDViewController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate> {
 @protected
-    UIScrollView<UIScrollViewRefreshing> *_scrollView;
+    UIScrollView<MDScrollViewRefreshing> *_scrollView;
 }
 
 @property (nonatomic, strong, readonly) MDListViewModel *viewModel;
 
 // The table view for tableView controller.
-@property (nonatomic, strong, readonly) UIScrollView<UIScrollViewRefreshing> *scrollView;
+@property (nonatomic, strong, readonly) UIScrollView<MDScrollViewRefreshing> *scrollView;
 
 - (instancetype)initWithViewModel:(MDListViewModel *)viewModel NS_DESIGNATED_INITIALIZER;
 
