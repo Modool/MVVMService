@@ -10,9 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class RACTwoTuple<__covariant First, __covariant Second>;
-@class RACThreeTuple<__covariant First, __covariant Second, __covariant Third>;
-
 @interface NSIndexPath (MDAdditions)
 
 + (nullable NSIndexSet *)rac_indexSetWithIndexPaths:(nullable NSArray<NSIndexPath *> *)indexPaths;
@@ -165,7 +162,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param viewModel deleting view model
  @return RACSignal<viewModel>
  */
-- (RACSignal<MDListItem> *)deleteSignalWithViewModel:(id<MDListItem>)viewModel;
+- (RACSignal *)deleteSignalWithViewModel:(id<MDListItem>)viewModel;
 
 /**
  Add row with view model
@@ -173,7 +170,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param viewModel inseting view model
  @return RACSignal<viewModel>
  */
-- (RACSignal<MDListItem> *)addSignalWithViewModel:(id<MDListItem>)viewModel;
+- (RACSignal *)addSignalWithViewModel:(id<MDListItem>)viewModel;
 
 /**
  Insert row with view model at index

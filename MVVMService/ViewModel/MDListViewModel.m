@@ -72,7 +72,7 @@
         return [[self requestDataSignalWithPage:[page unsignedIntegerValue]] takeUntil:self.rac_willDeallocSignal];
     }];
 
-    _deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTwoTuple<id<MDListItem>, NSNumber *> *tuple) {
+    _deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTuple *tuple) {
         RACTupleUnpack(id<MDListItem> viewModel, NSNumber *animation) = tuple;
         if (!viewModel) return [RACSignal empty];
 
@@ -81,7 +81,7 @@
     }];
     _deleteCommand.allowsConcurrentExecution = YES;
 
-    _insertCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACThreeTuple<id<MDListItem>, NSNumber *, NSNumber *> *tuple) {
+    _insertCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTuple *tuple) {
         RACTupleUnpack(id<MDListItem> viewModel, NSNumber *index, NSNumber *animation) = tuple;
         if (!viewModel) return [RACSignal empty];
 
@@ -90,7 +90,7 @@
     }];
     _insertCommand.allowsConcurrentExecution = YES;
 
-    _addCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTwoTuple<id<MDListItem>, NSNumber *> *tuple) {
+    _addCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTuple *tuple) {
         RACTupleUnpack(id<MDListItem> viewModel, NSNumber *animation) = tuple;
         if (!viewModel) return [RACSignal empty];
 
@@ -99,7 +99,7 @@
     }];
     _addCommand.allowsConcurrentExecution = YES;
 
-    _didMoveCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTwoTuple<NSIndexPath *, NSIndexPath *> *tuple) {
+    _didMoveCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(RACTuple *tuple) {
         RACTupleUnpack(NSIndexPath *sourceIndexPath, NSIndexPath *destinationIndexPath) = tuple;
         if (!sourceIndexPath || !destinationIndexPath) return [RACSignal empty];
 
@@ -167,11 +167,11 @@
     return [RACSignal empty];
 }
 
-- (RACSignal<MDListItem> *)deleteSignalWithViewModel:(id<MDListItem>)viewModel {
+- (RACSignal *)deleteSignalWithViewModel:(id<MDListItem>)viewModel {
     return (id)[RACSignal return:viewModel];
 }
 
-- (RACSignal<MDListItem> *)addSignalWithViewModel:(id<MDListItem>)viewModel {
+- (RACSignal *)addSignalWithViewModel:(id<MDListItem>)viewModel {
     return (id)[RACSignal return:viewModel];
 }
 
