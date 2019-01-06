@@ -103,14 +103,6 @@
         }
     }];
 
-    [self.viewModel.requestDataCommand.executing subscribeNext:^(NSNumber *executing) {
-        @strongify(self);
-        UIView *emptyDataSetView = [self.scrollView.subviews.rac_sequence objectPassingTest:^(UIView *view) {
-            return [NSStringFromClass(view.class) isEqualToString:@"DZNEmptyDataSetView"];
-        }];
-        emptyDataSetView.alpha = 1.0 - [executing floatValue];
-    }];
-
     if (self.viewModel.allowedPullToRefresh) {
         [[self.viewModel rac_signalForSelector:@selector(refresh)] subscribeNext:^(id x) {
             @strongify(self);
