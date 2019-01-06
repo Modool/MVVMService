@@ -86,6 +86,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)refresh;
 - (void)loadMore;
 
+/// default is YES.
+@property (nonatomic, assign) BOOL allowsSelection;
+/// default is NO.
+@property (nonatomic, assign) BOOL allowsMultipleSelection;
+
 @property (nonatomic, copy, nullable) NSString *keyword;
 
 /// input: RACTuplePack(itemViewModel, index, animation) output: RACTuplePack(itemViewModel, animation)

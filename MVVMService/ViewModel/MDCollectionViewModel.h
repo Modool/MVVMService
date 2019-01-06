@@ -30,9 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<MDCollectionViewModelUIDelegate> UIDelegate;
 
-@property (nonatomic, assign) BOOL allowsSelection; // default is YES
-@property (nonatomic, assign) BOOL allowsMultipleSelection; // default is NO
-
 @property (nonatomic, strong) UICollectionViewLayout *layout;
 
 - (void)setCollectionViewLayout:(UICollectionViewLayout *)layout animated:(BOOL)animated;

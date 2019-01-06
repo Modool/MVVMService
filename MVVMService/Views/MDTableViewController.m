@@ -33,6 +33,24 @@
     [self registerItemClass:[UITableViewCell class] forReuseIdentifier:NSStringFromClass(UITableViewCell.class)];
 }
 
+- (void)bindViewModel {
+    [super bindViewModel];
+
+    @weakify(self);
+    RAC(self.tableView, allowsSelection) = RACObserve(self.viewModel, allowsSelection);
+    RAC(self.tableView, allowsSelectionDuringEditing) = RACObserve(self.viewModel, allowsSelectionDuringEditing);
+
+    RAC(self.tableView, allowsMultipleSelection) = RACObserve(self.viewModel, allowsMultipleSelection);
+    RAC(self.tableView, allowsMultipleSelectionDuringEditing) = RACObserve(self.viewModel, allowsMultipleSelectionDuringEditing);
+
+    RAC(self, editing) = [RACObserve(self.viewModel, editing) take:1];
+
+    [[self.viewModel rac_signalForSelector:@selector(setEditing:animated:)] subscribeNext:^(RACTuple *tuple) {
+        @strongify(self);
+        [self setEditing:[tuple.first boolValue] animated:[tuple.second boolValue]];
+    }];
+}
+
 - (void)dealloc {
     ((UITableView *)_scrollView).delegate = nil;
     ((UITableView *)_scrollView).dataSource = nil;
@@ -40,9 +58,9 @@
 
 #pragma mark - accessor
 
-- (UIScrollView *)scrollView {
+- (UIScrollView<MDScrollViewRefreshing> *)scrollView {
     if (!_scrollView) {
-        UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:self.viewModel.style];
+        UITableView<MDScrollViewRefreshing> *tableView = [[UITableView<MDScrollViewRefreshing> alloc] initWithFrame:self.view.bounds style:self.viewModel.style];
         tableView.delegate = self;
         tableView.dataSource = self;
         
@@ -53,6 +71,12 @@
 
 - (UITableView *)tableView {
     return (UITableView *)[self scrollView];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+
+    [self.tableView setEditing:editing animated:animated];
 }
 
 #pragma mark - public
@@ -195,6 +219,10 @@
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self.viewModel allowedMoveAtIndexPath:indexPath];
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleInsert;
 }
 
 #pragma mark - UITableViewDelegate

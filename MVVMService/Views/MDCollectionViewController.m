@@ -47,9 +47,9 @@
 
 #pragma mark - accessor
 
-- (UIScrollView *)scrollView {
+- (UIScrollView<MDScrollViewRefreshing> *)scrollView {
     if (!_scrollView) {
-        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:self.viewModel.layout];
+        UICollectionView<MDScrollViewRefreshing> *collectionView = [[UICollectionView<MDScrollViewRefreshing> alloc] initWithFrame:self.view.bounds collectionViewLayout:self.viewModel.layout];
         collectionView.delegate = self;
         collectionView.dataSource = self;
         collectionView.backgroundColor = [UIColor whiteColor];

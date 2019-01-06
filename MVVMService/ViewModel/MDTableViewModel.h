@@ -42,6 +42,12 @@ API_AVAILABLE(ios(11.0))
 
 @property (nonatomic, assign) CGFloat rowHeight; // default is 0.
 
+@property (nonatomic, assign) BOOL allowsSelectionDuringEditing;
+@property (nonatomic, assign) BOOL allowsMultipleSelectionDuringEditing;
+
+@property (nonatomic, assign, getter=isEditing) BOOL editing;
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated;
+
 - (BOOL)allowedEditAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSUInteger)sectionForIndexTitle:(NSString *)title atIndex:(NSInteger)index;

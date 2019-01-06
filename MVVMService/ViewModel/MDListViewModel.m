@@ -57,6 +57,7 @@
         _pageOffset = 1;
         _sizeOfPerPage = 10;
         _loadMoreEnabled = YES;
+        _allowsSelection = YES;
         _automaticallyCancelSelection = YES;
         _shouldRequestRemoteDataOnViewDidLoad = YES;
     }

@@ -45,9 +45,6 @@
         self.automaticallyAdjustsScrollViewInsets = YES;
     }
 
-    _scrollView.emptyDataSetSource = self;
-    _scrollView.emptyDataSetDelegate = self;
-
     @weakify(self);
     if (self.viewModel.allowedPullToRefresh) {
         [_scrollView serviceAddPullToRefreshWithActionHandler:^{
@@ -75,7 +72,7 @@
     [super setView:view];
 
     if ([view isKindOfClass:UIScrollView.class]) {
-        _scrollView = (UIScrollView *)view;
+        _scrollView = (UIScrollView<MDScrollViewRefreshing> *)view;
     }
 }
 
@@ -181,26 +178,6 @@
     [_scrollView serviceStopInfiniting];
 
     [self loadMore];
-}
-
-#pragma mark - DZNEmptyDataSetSource
-
-- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
-    return [[NSAttributedString alloc] initWithString:@"暂无数据"];
-}
-
-- (CGFloat)verticalOffsetForEmptyDataSet:(UITableView *)tableView {
-    return -(self.scrollView.contentInset.top - self.scrollView.contentInset.bottom) / 2;
-}
-
-#pragma mark - DZNEmptyDataSetDelegate
-
-- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView {
-    return [self.viewModel.dataSource ?: @[] count];
-}
-
-- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView {
-    return YES;
 }
 
 @end

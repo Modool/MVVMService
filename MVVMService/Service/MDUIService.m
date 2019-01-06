@@ -43,7 +43,7 @@
     UINavigationController *navigationController = [_service navigationController];
 
     if (!navigationController || ![navigationController isKindOfClass:[UINavigationController class]]) return nil;
-    if (navigationController.childViewControllers.count <= 1) return nil;
+    if (navigationController.viewControllers.count <= 1) return nil;
 
     return [navigationController popViewControllerAnimated:animated];
 }
@@ -52,14 +52,14 @@
     UINavigationController *navigationController = [_service navigationController];
 
     if (!navigationController || ![navigationController isKindOfClass:[UINavigationController class]]) return nil;
-    if (![navigationController.childViewControllers containsObject:viewController]) return nil;
+    if (![navigationController.viewControllers containsObject:viewController]) return nil;
 
     return [navigationController popToViewController:viewController animated:animated];
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
     UINavigationController *navigationController = [_service navigationController];
-    if (!navigationController || navigationController.childViewControllers.count <= 1) return nil;
+    if (!navigationController || navigationController.viewControllers.count <= 1) return nil;
 
     return [navigationController popToRootViewControllerAnimated:animated];
 }

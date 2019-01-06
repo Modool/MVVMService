@@ -68,6 +68,14 @@
     return self;
 }
 
+- (void)setEditing:(BOOL)editing {
+    [self setEditing:editing animated:NO];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    _editing = editing;
+}
+
 - (BOOL)allowedEditAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
 }

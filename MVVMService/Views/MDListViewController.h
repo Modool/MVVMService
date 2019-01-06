@@ -6,8 +6,6 @@
 //  Copyright © 2018 modool. All rights reserved.
 //
 
-#import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
-
 #import "MDViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -27,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol MDView;
 @class MDListViewModel;
-@interface MDListViewController : MDViewController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate> {
+@interface MDListViewController : MDViewController {
 @protected
     UIScrollView<MDScrollViewRefreshing> *_scrollView;
 }
@@ -47,18 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)registerFooterViewClass:(Class<MDView, NSObject>)class forReuseIdentifier:(NSString *)reuseIdentifier;
 
 - (void)willDisplayCellAtIndexPath:(NSIndexPath *)indexPath;
-
-#pragma mark - DZNEmptyDataSetSource
-
-- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView;
-
-- (CGFloat)verticalOffsetForEmptyDataSet:(UITableView *)tableView;
-
-#pragma mark - DZNEmptyDataSetDelegate
-
-- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView;
-
-- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView;
 
 @end
 

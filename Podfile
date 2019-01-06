@@ -1,5 +1,3 @@
-
-
 source 'https://github.com/cocoapods/specs.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
@@ -10,7 +8,6 @@ use_frameworks!
 
 abstract_target 'MVVMService_targets' do
     pod 'ReactiveCocoa', '~> 2.5'
-    pod 'DZNEmptyDataSet', '~> 1.8.1'
 
     target 'MVVMService' do
     end

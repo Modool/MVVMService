@@ -16,7 +16,6 @@
     if (self = [super initWithService:service parameters:parameters]) {
         self.viewControllerClass = MDCollectionViewController.class;
         
-        _allowsSelection = YES;
         _layout = [[UICollectionViewLayout alloc] init];
     }
     return self;
