@@ -104,7 +104,7 @@
     NSString *identifier = nil;
     if ([viewModel respondsToSelector:@selector(identifier)]) identifier = viewModel.identifier;
     if (!identifier.length && [viewModel.class respondsToSelector:@selector(identifier)]) identifier = [viewModel.class identifier];
-    if (!identifier.length) identifier = NSStringFromClass(class);
+    if (!identifier.length) identifier = NSStringFromClass(viewModel.class);
 
     if (!identifier.length) return nil;
 

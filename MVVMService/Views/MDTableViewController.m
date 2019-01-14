@@ -17,14 +17,14 @@
     [super viewDidLoad];
 
     self.tableView.rowHeight = self.viewModel.rowHeight;
-    
+
     self.tableView.sectionHeaderHeight = 0;
     self.tableView.sectionFooterHeight = 0;
-    
+
     self.tableView.estimatedRowHeight = 0;
     self.tableView.estimatedSectionHeaderHeight = 0;
     self.tableView.estimatedSectionFooterHeight = 0;
-    
+
     self.tableView.sectionIndexColor = [UIColor darkGrayColor];
     self.tableView.sectionIndexBackgroundColor = [UIColor clearColor];
     self.tableView.sectionIndexMinimumDisplayRowCount = 20;
@@ -63,7 +63,7 @@
         UITableView<MDScrollViewRefreshing> *tableView = [[UITableView<MDScrollViewRefreshing> alloc] initWithFrame:self.view.bounds style:self.viewModel.style];
         tableView.delegate = self;
         tableView.dataSource = self;
-        
+
         _scrollView = tableView;
     }
     return _scrollView;
@@ -132,7 +132,7 @@
     NSString *identifier = nil;
     if ([viewModel respondsToSelector:@selector(identifier)]) identifier = viewModel.identifier;
     if (!identifier.length && [viewModel.class respondsToSelector:@selector(identifier)]) identifier = [viewModel.class identifier];
-    if (!identifier.length) identifier = NSStringFromClass(class);
+    if (!identifier.length) identifier = NSStringFromClass(viewModel.class);
 
     if (!identifier.length) return nil;
 
@@ -140,9 +140,9 @@
     if (!cell && class) cell = [[(Class)class alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 
     if (!cell) return nil;
-    
+
     [cell bindViewModel:viewModel];
-    
+
     return cell;
 }
 
@@ -156,25 +156,25 @@
 
 - (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView leadingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath API_AVAILABLE(ios(11.0)) {
     NSArray *actions = [self.viewModel leadingSwipeActionsForRowAtIndexPath:indexPath] ?: @[];
-    
+
     return [self.viewModel leadingSwipeConfigurationWithActions:actions];
 }
 
 - (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath API_AVAILABLE(ios(11.0)) {
     NSArray *actions = [self.viewModel trailingSwipeActionsForRowAtIndexPath:indexPath] ?: @[];
-    
+
     return [self.viewModel trailingSwipeConfigurationWithActions:actions];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     id<MDListSection> tableSection = self.viewModel.dataSource[section];
-    
+
     return [tableSection headerHeight] > 0 ? [tableSection headerHeight] : 0.5f;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     MDListSection<MDListSection> *tableSection = self.viewModel.dataSource[section];
-    
+
     return [tableSection header];
 }
 
@@ -184,13 +184,13 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     MDListSection<MDListSection> *tableSection = self.viewModel.dataSource[section];
-    
+
     return tableSection.footerHeight > 0 ? tableSection.footerHeight : 0.5f;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
     id<MDListSection> tableSection = self.viewModel.dataSource[section];
-    
+
     return [tableSection footer];
 }
 
@@ -232,7 +232,7 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-   [self willDisplayCellAtIndexPath:indexPath];
+    [self willDisplayCellAtIndexPath:indexPath];
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
