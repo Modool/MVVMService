@@ -19,8 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol MDListItem <NSObject>
 
-@required
+@optional
 @property (nonatomic, strong, readonly, nullable) NSString *identifier;
+@property (nonatomic, strong, readonly, nullable, class) NSString *identifier;
 
 @end
 

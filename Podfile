@@ -11,4 +11,6 @@ abstract_target 'MVVMService_targets' do
 
     target 'MVVMService' do
     end
+    target 'demo' do
+    end
 end

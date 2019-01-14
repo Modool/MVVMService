@@ -44,6 +44,8 @@ typedef NS_ENUM(NSUInteger, MDTitleViewType) {
 @property (nonatomic, copy, nullable  ) NSString *subtitle;
 @property (nonatomic, strong, nullable) UITabBarItem *tabBarItem;
 
+@property (nonatomic, assign) BOOL hidesBottomBarWhenPushed;
+
 /// The callback block.
 @property (nonatomic, copy, nullable) void (^completion)(id viewModel);
 

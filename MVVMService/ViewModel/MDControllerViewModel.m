@@ -37,6 +37,7 @@
         _service = service;
         _parameters = parameters;
         _viewControllerClass = MDViewController.class;
+        _hidesBottomBarWhenPushed = YES;
     }
     return self;
 }

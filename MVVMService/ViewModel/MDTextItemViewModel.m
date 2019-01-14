@@ -10,10 +10,6 @@
 
 @implementation MDTextItemViewModel
 
-- (NSString *)identifier {
-    return NSStringFromClass(self.class);
-}
-
 + (instancetype)viewModelWithTitle:(NSString *)title {
     MDTextItemViewModel *viewModel = [[self alloc] init];
     viewModel->_title = title;

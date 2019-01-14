@@ -99,7 +99,10 @@
     [RACObserve(self.viewModel, itemClasses) subscribeNext:^(NSDictionary<Class<MDListItem>, Class<MDView, NSObject>> *itemClasses) {
         @strongify(self);
         for (Class<MDListItem> class  in itemClasses.allKeys) {
-            [self registerItemClass:itemClasses[class] forReuseIdentifier:[[(Class)class new] identifier]];
+            NSString *identifier = NSStringFromClass(class);
+            if ([class respondsToSelector:@selector(identifier)]) identifier = [class identifier];
+            
+            if (identifier.length) [self registerItemClass:itemClasses[class] forReuseIdentifier:identifier];
         }
     }];
 

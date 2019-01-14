@@ -10,10 +10,6 @@
 
 @implementation MDItemViewModel
 
-- (NSString *)identifier {
-    return NSStringFromClass(self.class);
-}
-
 + (instancetype)viewModelWithAttributeText:(NSAttributedString *)attributeText {
     return [self viewModelWithAttributeText:attributeText detailAttributeText:nil];
 }

@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak, readonly) id<MDViewControllerService> service;
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
+- (void)pushViewController:(UIViewController *)viewController replacingAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)showViewController:(UIViewController *)viewController detail:(BOOL)detail referencedViewController:(UIViewController *)referencedViewController;
 
 - (nullable UIViewController *)popViewControllerAnimated:(BOOL)animated;
@@ -33,13 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MDUIService : NSObject <MDUIService>
 
 - (instancetype)initWithService:(id<MDViewControllerService>)service;
-
-@end
-
-@protocol MDService;
-@interface UIViewController (MDUIService)
-
-@property (nonatomic, strong) id<MDService> MVVMService;
 
 @end
 

@@ -6,6 +6,8 @@
 //  Copyright © 2018 modool. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import <UIKit/UIKit.h>
 
 #import "MDService.h"
@@ -126,23 +128,20 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
 }
 
 - (UIViewController *)navigatingViewControllerWithViewModel:(MDControllerViewModel *)viewModel {
-    if (viewModel.service != self && ![viewModel.service isKindOfClass:MDPassthroughService.class]) return nil;
+    return [self navigatingViewControllerWithViewModel:viewModel targetService:self];
+}
 
-    UIViewController *viewController = [self viewControllerWithViewModel:viewModel];
+- (UIViewController *)navigatingViewControllerWithViewModel:(MDControllerViewModel *)viewModel targetService:(id<MDService>)service {
+    if (viewModel.service != service && ![viewModel.service isKindOfClass:MDPassthroughService.class]) return nil;
+
+    UIViewController *viewController = [service viewControllerWithViewModel:viewModel];
     if (!viewController) return nil;
 
-    if (viewModel.service != self) {
-        viewModel.service = [self serviceWithViewModel:viewModel referenceService:self];
+    if (viewModel.service != service) {
+        viewModel.service = [self serviceWithViewModel:viewModel referenceService:service];
     }
 
     return viewController;
-}
-
-- (void)pushViewModel:(MDControllerViewModel *)viewModel animated:(BOOL)animated {
-    UIViewController *viewController = [self navigatingViewControllerWithViewModel:viewModel];
-    if (!viewController) return;
-
-    [_UIService pushViewController:viewController animated:animated];
 }
 
 - (void)showViewModel:(MDControllerViewModel *)viewModel {
@@ -166,6 +165,23 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
     if (!viewController) return;
 
     [_UIService showViewController:viewController detail:detail referencedViewController:referencedViewController];
+}
+
+- (void)pushViewModel:(MDControllerViewModel *)viewModel animated:(BOOL)animated {
+    UIViewController *viewController = [self navigatingViewControllerWithViewModel:viewModel];
+    if (!viewController) return;
+
+    [_UIService pushViewController:viewController animated:animated];
+}
+
+- (void)pushViewModel:(MDControllerViewModel *)viewModel replacingAtIndex:(NSUInteger)index animated:(BOOL)animated {
+    id<MDService> navigationService = self.navigationController.MVVMService;
+    id<MDService> targetService = navigationService == self ? self : navigationService;
+
+    UIViewController *viewController = [self navigatingViewControllerWithViewModel:viewModel targetService:targetService];
+    if (!viewController) return;
+
+    [_UIService pushViewController:viewController replacingAtIndex:index animated:animated];
 }
 
 - (void)popViewModelAnimated:(BOOL)animated {
@@ -312,6 +328,18 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
 
 - (id<MDService>)forkServiceWithViewController:(UIViewController *)viewController {
     return [[[self class] alloc] initWithViewController:viewController dataService:_dataService];
+}
+
+@end
+
+@implementation UIViewController (MDUIService)
+
+- (void)setMVVMService:(id<MDService>)MVVMService {
+    objc_setAssociatedObject(self, @selector(MVVMService), MVVMService, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (id<MDService>)MVVMService {
+    return objc_getAssociatedObject(self, @selector(MVVMService));
 }
 
 @end

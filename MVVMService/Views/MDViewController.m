@@ -41,6 +41,7 @@
         _viewModel = viewModel;
         self.title = viewModel.title;
         self.tabBarItem = viewModel.tabBarItem;
+        self.hidesBottomBarWhenPushed = viewModel.hidesBottomBarWhenPushed;
 
         [[self rac_signalForSelector:@selector(viewDidLoad)] subscribeNext:^(id x) {
             [viewModel viewDidLoad];
@@ -140,6 +141,8 @@
         @strongify(self);
         [self setValue:value forKeyPath:key];
     }];
+
+    RAC(self, hidesBottomBarWhenPushed) = RACObserve(self.viewModel, hidesBottomBarWhenPushed);
 
     // System title view
     RAC(self, title) = RACObserve(self.viewModel, title);

@@ -58,4 +58,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol MDService;
+@interface UIViewController (MDUIService)
+
+@property (nonatomic, strong) id<MDService> MVVMService;
+
+@end
+
 NS_ASSUME_NONNULL_END

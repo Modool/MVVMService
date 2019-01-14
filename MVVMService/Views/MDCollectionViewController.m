@@ -101,7 +101,11 @@
     if (!class) class = self.viewModel.itemClasses[viewModel.class];
     if (!class) return nil;
 
-    NSString *identifier = viewModel.identifier ?: NSStringFromClass(class);
+    NSString *identifier = nil;
+    if ([viewModel respondsToSelector:@selector(identifier)]) identifier = viewModel.identifier;
+    if (!identifier.length && [viewModel.class respondsToSelector:@selector(identifier)]) identifier = [viewModel.class identifier];
+    if (!identifier.length) identifier = NSStringFromClass(class);
+
     if (!identifier.length) return nil;
 
     UICollectionViewCell<MDView> *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
@@ -122,6 +126,7 @@
 
     NSDictionary<NSString *, Class<MDView, NSObject>> *classes = header ? self.viewModel.headerClasses : self.viewModel.footerClasses;
     Class<MDView> class = header ? tableSection.headerViewClass : tableSection.footerViewClass;
+
     NSString *identifier = [[classes allKeysForObject:class] firstObject];
     if (!identifier.length) identifier = NSStringFromClass(class);
 
