@@ -49,7 +49,7 @@
 
 @implementation MDListViewModel
 
-- (instancetype)initWithService:(id<MDService>)service parameters:(NSDictionary *)parameters{
+- (instancetype)initWithService:(id)service parameters:(NSDictionary *)parameters{
     self = [super initWithService:service parameters:parameters];
     if (self) {
         _firstPage = 1;
@@ -143,7 +143,7 @@
 }
 
 - (NSIndexPath *)indexPathWithViewModel:(id<MDListItem>)viewModel {
-    NSArray<MDListSection *> *dataSource = [[self dataSource] copy];
+    NSArray<id<MDListSection>> *dataSource = [[self dataSource] copy];
     NSUInteger numberOfSections = [[self dataSource] count];
 
     for (NSUInteger section = 0; section < numberOfSections; section++) {
@@ -151,7 +151,7 @@
         NSUInteger numberOfRows = [[tableSection viewModels] count];
 
         for (NSUInteger row = 0; row < numberOfRows; row++) {
-            MDViewModel *local = tableSection.viewModels[row];
+            id<MDListItem> local = tableSection.viewModels[row];
             if (viewModel == local || [viewModel isEqual:local]) {
                 return [NSIndexPath indexPathForRow:row inSection:section];
             }

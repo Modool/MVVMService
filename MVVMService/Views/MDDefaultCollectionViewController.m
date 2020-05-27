@@ -20,7 +20,7 @@
     @weakify(self);
     [RACObserve(self.viewModel, dataSource) subscribeNext:^(id x) {
         @strongify(self);
-        [self.collectionView reloadData];
+        [self reloadData];
     }];
 }
 

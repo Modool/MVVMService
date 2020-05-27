@@ -34,7 +34,7 @@ API_AVAILABLE(ios(11.0))
 @end
 
 @protocol MDListSection;
-@interface MDTableViewModel : MDListViewModel
+@interface MDTableViewModel<__covariant ServiceType> : MDListViewModel<ServiceType>
 
 @property (nonatomic, weak) id<MDTableViewModelUIDelegate> UIDelegate;
 

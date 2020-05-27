@@ -37,21 +37,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) Class<MDView> headerViewClass;
 @property (nonatomic, strong, nullable) Class<MDView> footerViewClass;
 
-@property (nonatomic, copy, nullable) NSArray<MDListItem> *viewModels;
+@property (nonatomic, copy, nullable) NSArray<id<MDListItem>> *viewModels;
 
 @end
 
 @interface MDListSection : MDViewModel <MDListSection>
 
-+ (instancetype)sectionWithViewModels:(nullable NSArray<MDListItem> *)viewModels;
-- (instancetype)initWithViewModels:(nullable NSArray<MDListItem> *)viewModels;
++ (instancetype)sectionWithViewModels:(nullable NSArray<id<MDListItem>> *)viewModels;
+- (instancetype)initWithViewModels:(nullable NSArray<id<MDListItem>> *)viewModels;
 
 @end
 
-@interface MDListViewModel : MDControllerViewModel
+@interface MDListViewModel<__covariant ServiceType> : MDControllerViewModel<ServiceType>
 
 /// The data source of table view.
-@property (nonatomic, copy, nullable) NSArray<MDListSection> *dataSource;
+@property (nonatomic, copy, nullable) NSArray<id<MDListSection>> *dataSource;
 
 /// ViewModel class: identifier and cell class
 @property (nonatomic, copy, nullable) NSDictionary<Class<MDListItem>, Class<MDView, NSObject>> *itemClasses;

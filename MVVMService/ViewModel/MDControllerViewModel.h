@@ -24,18 +24,16 @@ typedef NS_ENUM(NSUInteger, MDTitleViewType) {
     MDTitleViewTypeLoadingTitle
 };
 
-@class RACSignal;
-@class RACCommand;
-
-@protocol MDService, MDViewController;
+@class RACSignal, RACCommand;
+@protocol MDViewController;
 @protocol MDControllerViewModelUIDelegate <MDViewModelUIDelegate>
 @end
 
-@interface MDControllerViewModel : MDViewModel
+@interface MDControllerViewModel<__covariant ServiceType> : MDViewModel
 
 @property (nonatomic, weak, nullable) id<MDControllerViewModelUIDelegate> UIDelegate;
 
-@property (nonatomic, strong, readonly) id<MDService> service;
+@property (nonatomic, strong, readonly) ServiceType service;
 @property (nonatomic, copy, readonly, nullable) NSDictionary *parameters;
 
 @property (nonatomic, assign) MDTitleViewType titleViewType;
@@ -44,16 +42,11 @@ typedef NS_ENUM(NSUInteger, MDTitleViewType) {
 @property (nonatomic, copy, nullable  ) NSString *subtitle;
 @property (nonatomic, strong, nullable) UITabBarItem *tabBarItem;
 
-@property (nonatomic, assign) BOOL hidesBottomBarWhenPushed;
-
 /// The callback block.
 @property (nonatomic, copy, nullable) void (^completion)(id viewModel);
 
 /// sub class of MDViewController
 @property (nonatomic, strong, nullable) Class<MDViewController> viewControllerClass;
-
-/// Call phone number, input: phone number, output: request
-@property (nonatomic, strong, readonly) RACCommand *callCommand;
 
 /// Open URL by using UIApplication,, input: URL, output: result state
 @property (nonatomic, strong, readonly) RACCommand *openURLCommand;
@@ -61,8 +54,10 @@ typedef NS_ENUM(NSUInteger, MDTitleViewType) {
 @property (nonatomic, assign, readonly, getter=isAppeared) BOOL appeared;
 @property (nonatomic, assign, readonly, getter=isViewLoaded) BOOL viewLoaded;
 
-- (instancetype)initWithService:(id<MDService>)service parameters:(nullable NSDictionary *)parameters;
+- (instancetype)initWithService:(ServiceType)service parameters:(nullable NSDictionary *)parameters NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
 
+- (void)loadView NS_REQUIRES_SUPER;
 - (void)viewDidLoad NS_REQUIRES_SUPER;
 
 - (void)viewWillAppear NS_REQUIRES_SUPER;
@@ -72,6 +67,13 @@ typedef NS_ENUM(NSUInteger, MDTitleViewType) {
 
 - (void)showViewModel:(MDControllerViewModel *)viewModel;
 - (void)showDetailViewModel:(MDControllerViewModel *)viewModel;
+
+@end
+
+@protocol MDControllerViewModelExtension <NSObject>
+
+@optional
+- (void)initializeExtension;
 
 @end
 

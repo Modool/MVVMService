@@ -21,11 +21,18 @@
 @dynamic UIDelegate;
 
 + (instancetype)allocWithZone:(struct _NSZone *)zone{
-    MDControllerViewModel *viewModel = [super allocWithZone:zone];
+    MDControllerViewModel<MDControllerViewModelExtension> *viewModel = (id)[super allocWithZone:zone];
     @weakify(viewModel);
     [[viewModel rac_signalForSelector:@selector(initWithService:parameters:)] subscribeNext:^(RACTuple * _Nullable x) {
         @strongify(viewModel);
         [viewModel initialize];
+    }];
+    
+    [[viewModel rac_signalForSelector:@selector(initialize)] subscribeNext:^(RACTuple * _Nullable x) {
+        @strongify(viewModel);
+        if ([viewModel respondsToSelector:@selector(initializeExtension)]) {
+            [viewModel initializeExtension];
+        }
     }];
     
     return viewModel;
@@ -37,7 +44,6 @@
         _service = service;
         _parameters = parameters;
         _viewControllerClass = MDViewController.class;
-        _hidesBottomBarWhenPushed = YES;
     }
     return self;
 }
@@ -47,16 +53,14 @@
 
     _tabBarItem = [[UITabBarItem alloc] initWithTitle:_title image:nil selectedImage:nil];
 
-    _callCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(NSString *phoneNumber) {
-        return [RACSignal return:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel:%@", phoneNumber]]]];
-    }];
-
     _openURLCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(NSURL *URL) {
         return [RACSignal return:@([UIApplication.sharedApplication openURL:URL])];
     }];
 }
 
 #pragma mark - public
+
+- (void)loadView {}
 
 - (void)viewDidLoad {
     _viewLoaded = YES;

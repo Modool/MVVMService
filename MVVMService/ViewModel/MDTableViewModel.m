@@ -60,7 +60,7 @@
 @implementation MDTableViewModel
 @dynamic UIDelegate;
 
-- (instancetype)initWithService:(id<MDService>)service parameters:(NSDictionary *)parameters {
+- (instancetype)initWithService:(id)service parameters:(NSDictionary *)parameters {
     NSParameterAssert(service);
     if (self = [super initWithService:service parameters:parameters]) {
         self.viewControllerClass = MDTableViewController.class;

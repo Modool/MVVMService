@@ -18,5 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) UIEdgeInsets safeContentInsets;
 @end
 
+@interface UIScrollView (SafeArea)
+@property (nonatomic, assign, readonly) UIEdgeInsets compatContentInset;
+@end
 
 NS_ASSUME_NONNULL_END

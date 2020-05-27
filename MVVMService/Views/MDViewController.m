@@ -18,21 +18,10 @@
 #import "MDLoadingTitleView.h"
 
 @implementation MDViewController{
-    UIWebView *_callWebView;
     UIEdgeInsets _safeContentInsets;
 }
 
 @synthesize viewModel = _viewModel;
-
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    MDViewController *viewController = (id)[super allocWithZone:zone];
-    @weakify(viewController);
-    [[viewController rac_signalForSelector:@selector(viewDidLoad)] subscribeNext:^(id x) {
-        @strongify(viewController);
-        [viewController bindViewModel];
-    }];
-    return viewController;
-}
 
 - (instancetype)initWithViewModel:(MDControllerViewModel *)viewModel {
     NSAssert(viewModel, @"View model must be nonull.");
@@ -41,9 +30,14 @@
         _viewModel = viewModel;
         self.title = viewModel.title;
         self.tabBarItem = viewModel.tabBarItem;
-        self.hidesBottomBarWhenPushed = viewModel.hidesBottomBarWhenPushed;
 
+        @weakify(self);
+        [[self rac_signalForSelector:@selector(loadView)] subscribeNext:^(id x) {
+            [viewModel loadView];
+        }];
         [[self rac_signalForSelector:@selector(viewDidLoad)] subscribeNext:^(id x) {
+            @strongify(self);
+            [self bindViewModel];
             [viewModel viewDidLoad];
         }];
         [[self rac_signalForSelector:@selector(viewWillAppear:)] subscribeNext:^(id x) {
@@ -105,6 +99,12 @@
 
 #pragma mark - accessor
 
+- (void)setContentInsetAdjustmentBehavior:(MDViewControllerContentInsetAdjustmentBehavior)contentInsetAdjustmentBehavior {
+    _contentInsetAdjustmentBehavior = contentInsetAdjustmentBehavior;
+
+    self.automaticallyAdjustsScrollViewInsets = contentInsetAdjustmentBehavior != MDViewControllerContentInsetAdjustmentNever;
+}
+
 - (UIEdgeInsets)safeContentInsets {
     if (UIEdgeInsetsEqualToEdgeInsets(_safeContentInsets, UIEdgeInsetsZero)) {
         _safeContentInsets = [super safeContentInsets];
@@ -142,8 +142,6 @@
         [self setValue:value forKeyPath:key];
     }];
 
-    RAC(self, hidesBottomBarWhenPushed) = RACObserve(self.viewModel, hidesBottomBarWhenPushed);
-
     // System title view
     RAC(self, title) = RACObserve(self.viewModel, title);
     UIView *titleView = self.navigationItem.titleView;
@@ -174,15 +172,6 @@
             case MDTitleViewTypeLoadingTitle:
                 return (UIView *)loadingTitleView;
         }
-    }];
-
-    [self.viewModel.callCommand.executionSignals.switchToLatest subscribeNext:^(NSURLRequest *request) {
-        @strongify(self);
-        if (!self->_callWebView) {
-            self->_callWebView = [[UIWebView alloc] init];
-            [self.view addSubview:self->_callWebView];
-        }
-        [self->_callWebView loadRequest:request];
     }];
 }
 

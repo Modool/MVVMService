@@ -6,8 +6,6 @@
 //  Copyright © 2018 modool. All rights reserved.
 //
 
-#import <objc/runtime.h>
-
 #import <UIKit/UIKit.h>
 
 #import "MDService.h"
@@ -101,8 +99,7 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
     UIViewController *viewController = [self viewControllerWithViewModel:viewModel];
     if (!viewController) return nil;
 
-    Class serviceClass = navigating ? MDNavigationService.class : MDService.class;
-    MDService *presentService = [[serviceClass alloc] initWithDataService:_dataService];
+    MDService *presentService = [[MDService alloc] initWithDataService:_dataService];
     [self addService:presentService];
 
     if (service == self) {
@@ -128,20 +125,23 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
 }
 
 - (UIViewController *)navigatingViewControllerWithViewModel:(MDControllerViewModel *)viewModel {
-    return [self navigatingViewControllerWithViewModel:viewModel targetService:self];
-}
+    if (viewModel.service != self && ![viewModel.service isKindOfClass:MDPassthroughService.class]) return nil;
 
-- (UIViewController *)navigatingViewControllerWithViewModel:(MDControllerViewModel *)viewModel targetService:(id<MDService>)service {
-    if (viewModel.service != service && ![viewModel.service isKindOfClass:MDPassthroughService.class]) return nil;
-
-    UIViewController *viewController = [service viewControllerWithViewModel:viewModel];
+    UIViewController *viewController = [self viewControllerWithViewModel:viewModel];
     if (!viewController) return nil;
 
-    if (viewModel.service != service) {
-        viewModel.service = [self serviceWithViewModel:viewModel referenceService:service];
+    if (viewModel.service != self) {
+        viewModel.service = [self serviceWithViewModel:viewModel referenceService:self];
     }
 
     return viewController;
+}
+
+- (void)pushViewModel:(MDControllerViewModel *)viewModel animated:(BOOL)animated {
+    UIViewController *viewController = [self navigatingViewControllerWithViewModel:viewModel];
+    if (!viewController) return;
+
+    [_UIService pushViewController:viewController animated:animated];
 }
 
 - (void)showViewModel:(MDControllerViewModel *)viewModel {
@@ -165,23 +165,6 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
     if (!viewController) return;
 
     [_UIService showViewController:viewController detail:detail referencedViewController:referencedViewController];
-}
-
-- (void)pushViewModel:(MDControllerViewModel *)viewModel animated:(BOOL)animated {
-    UIViewController *viewController = [self navigatingViewControllerWithViewModel:viewModel];
-    if (!viewController) return;
-
-    [_UIService pushViewController:viewController animated:animated];
-}
-
-- (void)pushViewModel:(MDControllerViewModel *)viewModel replacingAtIndex:(NSUInteger)index animated:(BOOL)animated {
-    id<MDService> navigationService = self.navigationController.MVVMService;
-    id<MDService> targetService = navigationService == self ? self : navigationService;
-
-    UIViewController *viewController = [self navigatingViewControllerWithViewModel:viewModel targetService:targetService];
-    if (!viewController) return;
-
-    [_UIService pushViewController:viewController replacingAtIndex:index animated:animated];
 }
 
 - (void)popViewModelAnimated:(BOOL)animated {
@@ -269,57 +252,13 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
 
 @end
 
-@implementation MDNavigationService
-@end
-
-@implementation MDSplitService
-@end
-
-@implementation MDRootService
-
-@end
-
-@implementation MDRootNavigationService
-
-@end
-
-@implementation MDService (Initializer)
-
-+ (id<MDService>)serviceWithNavigationController:(UINavigationController *)navigationController dataService:(id)dataService {
-    NSParameterAssert([navigationController isKindOfClass:UINavigationController.class]);
-
-    MDRootNavigationService *service = (id)navigationController.MVVMService;
-    if (service) return service;
-
-    return [[MDRootNavigationService alloc] initWithViewController:navigationController dataService:dataService];
-}
-
-+ (id<MDService>)serviceWithSplitViewController:(UISplitViewController *)splitViewController dataService:(id)dataService {
-    NSParameterAssert([splitViewController isKindOfClass:UISplitViewController.class]);
-
-    MDSplitService *service = (id)splitViewController.MVVMService;
-    if (service) return service;
-
-    return [[MDSplitService alloc] initWithViewController:splitViewController dataService:dataService];
-}
-
-@end
-
 @implementation MDService (Inconclusive)
 
 + (id<MDService>)serviceWithViewController:(UIViewController *)viewController dataService:(id)dataService {
-    MDRootService *service = (id)viewController.MVVMService;
+    MDService *service = (id)viewController.MVVMService;
     if (service) return service;
 
-    if ([viewController isKindOfClass:UINavigationController.class]) {
-        return [self serviceWithNavigationController:(id)viewController dataService:dataService];
-    }
-
-    if ([viewController isKindOfClass:UISplitViewController.class]) {
-        return [self serviceWithSplitViewController:(id)viewController dataService:dataService];
-    }
-
-    return [[MDRootService alloc] initWithViewController:viewController dataService:dataService];
+    return [[self alloc] initWithViewController:viewController dataService:dataService];
 }
 
 @end
@@ -328,18 +267,6 @@ NSString * const MDServiceErrorDomain = @"com.modool.mvvm.service.error.domain";
 
 - (id<MDService>)forkServiceWithViewController:(UIViewController *)viewController {
     return [[[self class] alloc] initWithViewController:viewController dataService:_dataService];
-}
-
-@end
-
-@implementation UIViewController (MDUIService)
-
-- (void)setMVVMService:(id<MDService>)MVVMService {
-    objc_setAssociatedObject(self, @selector(MVVMService), MVVMService, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (id<MDService>)MVVMService {
-    return objc_getAssociatedObject(self, @selector(MVVMService));
 }
 
 @end

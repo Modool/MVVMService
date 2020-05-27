@@ -6,6 +6,8 @@
 //  Copyright © 2018 modool. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import "MDUIService.h"
 #import "MDService+Private.h"
 
@@ -25,13 +27,7 @@
     UINavigationController *navigationController = [_service navigationController];
     if (!navigationController || ![navigationController isKindOfClass:[UINavigationController class]]) return;
 
-    [navigationController pushViewController:viewController animated:animated];
-}
-
-- (void)pushViewController:(UIViewController *)viewController replacingAtIndex:(NSUInteger)index animated:(BOOL)animated {
-    UINavigationController *navigationController = [_service navigationController];
-    if (!navigationController || ![navigationController isKindOfClass:[UINavigationController class]]) return;
-
+    viewController.hidesBottomBarWhenPushed = YES;
     [navigationController pushViewController:viewController animated:animated];
 }
 
@@ -84,6 +80,18 @@
 
 - (void)resetRootViewController:(UIViewController *)viewController {
     UIApplication.sharedApplication.delegate.window.rootViewController = viewController;
+}
+
+@end
+
+@implementation UIViewController (MDUIService)
+
+- (void)setMVVMService:(id<MDService>)MVVMService {
+    objc_setAssociatedObject(self, @selector(MVVMService), MVVMService, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (id<MDService>)MVVMService {
+    return objc_getAssociatedObject(self, @selector(MVVMService));
 }
 
 @end

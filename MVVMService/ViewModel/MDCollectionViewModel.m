@@ -12,10 +12,10 @@
 @implementation MDCollectionViewModel
 @dynamic UIDelegate;
 
-- (instancetype)initWithService:(id<MDService>)service parameters:(NSDictionary *)parameters {
+- (instancetype)initWithService:(id)service parameters:(NSDictionary *)parameters {
     if (self = [super initWithService:service parameters:parameters]) {
         self.viewControllerClass = MDCollectionViewController.class;
-        
+
         _layout = [[UICollectionViewLayout alloc] init];
     }
     return self;

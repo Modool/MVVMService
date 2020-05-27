@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithViewModel:(MDListViewModel *)viewModel NS_DESIGNATED_INITIALIZER;
 
+- (void)reloadData;
+
 - (void)refresh;
 - (void)loadMore;
 

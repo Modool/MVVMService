@@ -45,7 +45,7 @@
 #pragma mark - private
 
 - (void)_updateContentView {
-    _titleLabel.textColor = self.selected ? _viewModel.selectedTextColor : _viewModel.textColor;
+    _titleLabel.textColor = self.selected ? _viewModel.textColor : _viewModel.selectedTextColor;
 }
 
 #pragma mark - public

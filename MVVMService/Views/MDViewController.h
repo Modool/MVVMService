@@ -28,7 +28,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+typedef NS_ENUM(NSUInteger, MDViewControllerContentInsetAdjustmentBehavior) {
+    MDViewControllerContentInsetAdjustmentAutomatic, // UIScrollViewContentInsetAdjustmentAutomatic
+    MDViewControllerContentInsetAdjustmentScrollableAxes, // UIScrollViewContentInsetAdjustmentScrollableAxes
+    MDViewControllerContentInsetAdjustmentNever, // UIScrollViewContentInsetAdjustmentNever
+    MDViewControllerContentInsetAdjustmentAlways, // UIScrollViewContentInsetAdjustmentAlways
+};
+
 @interface MDViewController : UIViewController<MDViewController>
+
+@property(nonatomic, assign) MDViewControllerContentInsetAdjustmentBehavior contentInsetAdjustmentBehavior;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;

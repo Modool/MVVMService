@@ -65,10 +65,6 @@
 
 #pragma mark - public
 
-- (void)reloadData {
-    [self.collectionView reloadData];
-}
-
 - (void)registerItemClass:(Class<MDView, NSObject>)class forReuseIdentifier:(NSString *)reuseIdentifier {
     [self.collectionView registerClass:class forCellWithReuseIdentifier:reuseIdentifier];
 }
@@ -101,16 +97,14 @@
     if (!class) class = self.viewModel.itemClasses[viewModel.class];
     if (!class) return nil;
 
-    NSString *identifier = nil;
-    if ([viewModel respondsToSelector:@selector(identifier)]) identifier = viewModel.identifier;
-    if (!identifier.length && [viewModel.class respondsToSelector:@selector(identifier)]) identifier = [viewModel.class identifier];
-    if (!identifier.length) identifier = NSStringFromClass(viewModel.class);
-
-    if (!identifier.length) return nil;
+    NSString *identifier = [viewModel respondsToSelector:@selector(identifier)] ? viewModel.identifier : nil;
+    if (!identifier && [viewModel.class respondsToSelector:@selector(identifier)]) identifier = [viewModel.class identifier];
+    if (!identifier.length) identifier = NSStringFromClass(class);
 
     UICollectionViewCell<MDView> *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     if (!cell) return nil;
 
+    viewModel.UIDelegate = (id)cell;
     [cell bindViewModel:viewModel];
 
     return cell;
@@ -126,13 +120,13 @@
 
     NSDictionary<NSString *, Class<MDView, NSObject>> *classes = header ? self.viewModel.headerClasses : self.viewModel.footerClasses;
     Class<MDView> class = header ? tableSection.headerViewClass : tableSection.footerViewClass;
-
     NSString *identifier = [[classes allKeysForObject:class] firstObject];
     if (!identifier.length) identifier = NSStringFromClass(class);
 
     UICollectionReusableView<MDView> *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:identifier forIndexPath:indexPath];
     if (!view) return nil;
 
+    tableSection.UIDelegate = (id)view;
     [view bindViewModel:tableSection];
 
     return view;

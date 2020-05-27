@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class RACCommand;
-@interface MDMultipleViewModel : MDControllerViewModel
+@interface MDMultipleViewModel<__covariant ServiceType> : MDControllerViewModel<ServiceType>
 
 @property (nonatomic, strong, nullable) RACCommand *didSelectCommand;
 

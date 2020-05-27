@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface MDCollectionViewModel : MDListViewModel <MDCollectionFlowLayoutViewModel>
+@interface MDCollectionViewModel<__covariant ServiceType> : MDListViewModel<ServiceType> <MDCollectionFlowLayoutViewModel>
 
 @property (nonatomic, weak) id<MDCollectionViewModelUIDelegate> UIDelegate;
 

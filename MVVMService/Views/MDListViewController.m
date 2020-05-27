@@ -39,11 +39,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if (@available(iOS 11, *)) {
-        self.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
-    } else {
-        self.automaticallyAdjustsScrollViewInsets = YES;
-    }
+    self.contentInsetAdjustmentBehavior = MDViewControllerContentInsetAdjustmentAutomatic;
 
     @weakify(self);
     if (self.viewModel.allowedPullToRefresh) {
@@ -76,6 +72,14 @@
     }
 }
 
+- (void)setContentInsetAdjustmentBehavior:(MDViewControllerContentInsetAdjustmentBehavior)contentInsetAdjustmentBehavior {
+    [super setContentInsetAdjustmentBehavior:contentInsetAdjustmentBehavior];
+
+    if (@available(iOS 11, *)) {
+        self.scrollView.contentInsetAdjustmentBehavior = (UIScrollViewContentInsetAdjustmentBehavior)contentInsetAdjustmentBehavior;
+    }
+}
+
 #pragma mark - protected
 
 - (void)bindViewModel {
@@ -99,10 +103,9 @@
     [RACObserve(self.viewModel, itemClasses) subscribeNext:^(NSDictionary<Class<MDListItem>, Class<MDView, NSObject>> *itemClasses) {
         @strongify(self);
         for (Class<MDListItem> class  in itemClasses.allKeys) {
-            NSString *identifier = NSStringFromClass(class);
-            if ([class respondsToSelector:@selector(identifier)]) identifier = [class identifier];
-            
-            if (identifier.length) [self registerItemClass:itemClasses[class] forReuseIdentifier:identifier];
+            if (![class respondsToSelector:@selector(identifier)]) continue;
+
+            [self registerItemClass:itemClasses[class] forReuseIdentifier:[class identifier]];
         }
     }];
 
@@ -123,7 +126,11 @@
 
 #pragma mark - public
 
-- (void)reloadData {}
+- (void)reloadData {
+    if ([_scrollView respondsToSelector:@selector(reloadData)]) {
+        [_scrollView performSelector:@selector(reloadData)];
+    }
+}
 
 - (void)refresh {
     @weakify(self);

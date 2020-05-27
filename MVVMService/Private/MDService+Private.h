@@ -42,27 +42,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface MDNavigationService : MDService
-
-@end
-
-@interface MDSplitService : MDService
-
-@end
-
-@interface MDRootService : MDService
-
-@end
-
-@interface MDRootNavigationService : MDNavigationService
-
-@end
-
-@protocol MDService;
-@interface UIViewController (MDUIService)
-
-@property (nonatomic, strong) id<MDService> MVVMService;
-
-@end
-
 NS_ASSUME_NONNULL_END

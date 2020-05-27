@@ -34,3 +34,15 @@
 }
 
 @end
+
+@implementation UIScrollView (SafeArea)
+
+- (UIEdgeInsets)compatContentInset {
+    if (@available(iOS 11, *)) {
+        return self.adjustedContentInset;
+    } else {
+        return self.contentInset;
+    }
+}
+
+@end
